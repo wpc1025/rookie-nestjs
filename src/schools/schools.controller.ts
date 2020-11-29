@@ -1,14 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { SchoolsService } from './schools.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SchoolDto } from './dto/school.dto';
 import { SchoolEntity } from './entity/school.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { Logger } from 'winston';
 
 @ApiTags('schools 学校信息管理相关接口')
 @Controller('schools')
 export class SchoolsController {
-  constructor(private readonly schoolsService: SchoolsService) {
+  constructor(private readonly schoolsService: SchoolsService, @Inject('winston') private readonly logger: Logger) {
 
   }
 
@@ -22,6 +23,7 @@ export class SchoolsController {
   @Get(':id')
   @ApiOperation({ summary: '根据id获取某个学校信息' })
   getSchoolById(@Param('id')id: number): Promise<SchoolEntity> {
+    this.logger.info(`[根据id获取某个学校信息] id:${id}`);
     return this.schoolsService.getSchoolById(id);
   }
 
